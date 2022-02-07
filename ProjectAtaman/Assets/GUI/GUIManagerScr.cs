@@ -8,8 +8,8 @@ using GUILib;
 public class GUIManagerScr : MonoBehaviour
 {
     public static GUIManagerScr GUIManager;
-	[SerializeField] Text nameText;
-	[SerializeField] Text storyText;
+	[SerializeField] private Text nameText;
+	[SerializeField] private Text largeText;
 	private GUIData tmpGUIData;
 
     void Awake()
@@ -19,12 +19,12 @@ public class GUIManagerScr : MonoBehaviour
 
     public void Choose(IChosen _chosen)
     {
-		tmpGUIData = _chosen.GetGUIData();
+		tmpGUIData = _chosen.GetDataForGUI();
 		nameText.text = tmpGUIData.Name;
-		storyText.text = "";
+		largeText.text = "";
         foreach (string s in tmpGUIData.TextList)
 		{
-            storyText.text += s;
+            largeText.text += s + "\n";
         }
 	}
 }

@@ -3,36 +3,32 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using HumanLib;
-using FightLib;
 using GUILib;
+using OrderLib;
 
 // ! Необходимо добавить интерфейс для паттерна Компоновщик при создании подразделений
-public class WarriorScr : MonoBehaviour, IChosen
+public class WarriorScr : MonoBehaviour, IChosen, IOrder
 {
 	// * Составные части и состояния ///////////////////////////////////////////////////////////////////////////////////////
-	private BodyState body;
-	private MindState mind;
-	private ActionState action;
+	[SerializeField] private BodyState body;
+	[SerializeField] private MindState mind;
+	[SerializeField] private ActionState action;
 	// TODO Добавить Дух
 
-	// * Внешние параметры живого существа /////////////////////////////////////////////////////////////////////////////////
+	// * Внешние условия ///////////////////////////////////////////////////////////////////////////////////////////////////
+	[SerializeField] private Order order; // Текущий приказ
+	// TODO Добавить класс условий внешней среды (осадки, температура)
+	// TODO Добавить класс поверхности под ногами, чтобы соединить с условиями и повлиять на действия воина
+
+	// * Видимые параметры воина ///////////////////////////////////////////////////////////////////////////////////////////
 	public bool IsAlive { get => body.Condition != BodyCondition.dead; }
-	public ActionStatus Status { get => action.Status; }
+	public ActionStatus Status { get => action.Status; } // TODO У статусов должно быть поле с информацией, как эта деятельность выглядит со стороны) Если думает, то со стороны должно казаться, что просто стоит
 	[SerializeField] private int team;
     public int Team { get => team; }
 	[SerializeField] private SpriteRenderer spriteRenderer;
 	[SerializeField] private Color spriteColor;
     [SerializeField] private int viewDirection;
 	//public int ViewDirection { get => (int)transform.localEulerAngles.z; }
-
-	// * Управление? //////////////////////////////////////////////////////////////////////////////////////////////////
-	private Command command;
-
-	// * Разобрать! //////////////////////////////////////////////////////////////////////////////////////////////////
-	// TODO Вынести все в отдельный класс
-	//private int chanceHitFailure = 10; // Шанс неудачной атаки в процентах, зависящий от атакующего (например: споткнулся, соскользнула рука) // TODO Переделать в функцию, вычисляющую значение в зависимости от Состояния тела + Состояния ума + Снаряжения
-	//private float impactForce = 1f; // Сила удара // TODO Нужен класс оружие (без оружия, нож, пика ...) и там хранить данный параметр
-	//private float initiative = 5f;
 
 	// * Вспомогательные переменные ////////////////////////////////////////////////////////////////////////////////////////
 	[SerializeField] private List<string> hisStory = new List<string>();
@@ -51,7 +47,7 @@ public class WarriorScr : MonoBehaviour, IChosen
 	
 	void Start()
     {
-		DirectReceiveInformation(new Command(CommandType.AttackEnemyUnit, null));
+		SetOrder(new Order(OrderType.AttackEnemy, null));
     }
 
 	/*public void Init(string _name, int _team, int _viewDirection, Sprite _sprite, Color _color) // TODO Добавить перегрузку без повторений с возможностью задавать необязательные параметры
@@ -63,17 +59,20 @@ public class WarriorScr : MonoBehaviour, IChosen
 		spriteRenderer.color = _color;
 	}*/
 
-	// * Обработка входящей информации /////////////////////////////////////////////////////////////////////////////////////
-	// ! Применить паттерн Команда
+	// * Обработка взаимодействий объекта /////////////////////////////////////////////////////////////////////////////////////
 	void OnTriggerEnter(Collider _collider)
     {}
 
-	public void DirectReceiveInformation(Command _command) // Прямое получение информации
+	public void MouseClick() // TODO Добавить как минимум индивидуальный звуковой отклик при выборе юнита
+	{}
+
+	// * Действия и реакции //////////////////////////////////////////////////////////////////////////////////////////////////////////
+	public void SetOrder(Order _order) // TODO Перенести в класс приказа
 	{
-		command = _command;
-		switch(command.Type)
+		order = _order;
+		switch (order.Type)
 		{
-			case CommandType.AttackEnemyUnit:
+			case OrderType.AttackEnemy: // ? Связать с образом мысли / характером в Mind: Hunting, AttackingEnemy 
 				mind.ChooseEnemy();
 				if (mind.enemy)
 				{
@@ -83,38 +82,32 @@ public class WarriorScr : MonoBehaviour, IChosen
 					FightMonitorScr.Monitor.NewFight(this);
 				}
 				break;
-			case CommandType.Stop:
+			case OrderType.Stop:
 				ChangeAction(new Idle()); // TODO Прописать обнуления всех параметров, участвовавших в действиях (например "враг")
 				break;
 		}
 	}
 
-	public void MouseClick()
-	{}
-
-	public GUIData GetGUIData()
-	{
-		return new GUIData(this.name, hisStory);
-	}
-
-	// * Действия //////////////////////////////////////////////////////////////////////////////////////////////////////////
-	public void BeAttacked(WarriorScr _striker)
-    {
-		mind.UpdateRelations(RelationType.nonexistent, _striker, RelationType.attacking, "SaveImpact");
-		FightMonitorScr.Monitor.NewFight(this);
-	}
-
-	public void ContinueToAct() // TODO Переделать в Действие, а воин сам уже должен выбирать, какое именно совершить
+	public void ContinueToAct() // TODO Переделать в Действие, а воин сам уже должен выбирать, какое именно совершить // TODO Добавить работу мозга на этом этапе
 	{
 		action.ContinueToAct();
 	}
 
-	public void TakeHit(WarriorScr _striker) // TODO Реализовать ответные действия по обратной ссылке на нападающего
-    {
-		body.TakeDamage(1); // TODO Нужна система получения урона и последствий
+	public void BeAttacked(WarriorScr _striker)
+	{
+		mind.BeAttacked(_striker);
 	}
 
-	// * Служебные //////////////////////////////////////////////////////////////////////////////////////////////////////////
+	public void TakeHit(WarriorScr _striker)
+	{
+		int damage = action.EnemyHitReaction(_striker);
+		if (damage > 0)
+		{
+			body.TakeDamage(damage); // TODO Нужна система получения урона и последствий
+		}
+	}
+
+	// * Управление состояниями //////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public void ChangeBodyCondition(BodyState _bodyCondition)
 	{
 		body = _bodyCondition;
@@ -133,6 +126,7 @@ public class WarriorScr : MonoBehaviour, IChosen
 		mind.SetOwner(this);
 	}
 
+	// * История воина ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public void AddToStory(string _text)
     {
 		hisStory.Add(_text);
@@ -144,5 +138,11 @@ public class WarriorScr : MonoBehaviour, IChosen
 		{
 			print(s);
 		}
+	}
+
+	// * Служебное ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	public GUIData GetDataForGUI()
+	{
+		return new GUIData(this.name, hisStory);
 	}
 }

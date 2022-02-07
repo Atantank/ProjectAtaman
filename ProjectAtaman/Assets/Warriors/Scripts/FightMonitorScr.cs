@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // ! В Одиночке есть проблема с многопоточностью, необходимо переделать, если продолжу использовать
-public class FightMonitorScr : MonoBehaviour
+public class FightMonitorScr : MonoBehaviour //? BattleMonitor?
 {
     public static FightMonitorScr Monitor { get; private set; }
     [SerializeField] private List<WarriorScr> warringWarriors = new List<WarriorScr>(); // TODO Нужен список не самих воинов, а сражений у каждого воюющего
-    /*private float timeCounter = 0;
+    
+    /*private float timeCounter = 0; // Заготовочка для установки скорости / темпа игры
 	timeCounter += Time.deltaTime;
     if (timeCounter > GameManager.GM.GameSpeed)
     {
@@ -19,7 +20,7 @@ public class FightMonitorScr : MonoBehaviour
         Monitor = this;
     }
 
-    void FixedUpdate()
+    void FixedUpdate() // ? Что вообще следует мониторить тут? Не просто же пробегать по действующим лицам и заставлять их продолжать действовать?
     {
         if (!GameManager.GM.IsPaused)
         {

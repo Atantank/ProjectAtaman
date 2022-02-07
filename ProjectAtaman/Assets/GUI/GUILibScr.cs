@@ -4,6 +4,12 @@ using UnityEngine;
 
 namespace GUILib
 {
+	public interface IChosen
+	{
+		public void MouseClick();
+		public GUIData GetDataForGUI();
+	}
+    
     public class GUIData
     {
         public string Name;

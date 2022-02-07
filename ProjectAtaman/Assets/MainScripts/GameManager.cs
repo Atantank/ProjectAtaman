@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using GUILib;
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager GM { get; private set; }
@@ -15,11 +17,6 @@ public class GameManager : MonoBehaviour
 		GameSpeed = 1f;
 		IsPaused = false;
         GM = this;
-    }
-
-    void Start()
-    {
-        
     }
 
     void Update()
