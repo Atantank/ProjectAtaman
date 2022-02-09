@@ -13,25 +13,32 @@ namespace HumanLib
 		dead
 	}
 
-	public abstract class BodyState : State
+	public abstract class BodyState : State // Родительский класс для всех состояний тела
 	{
+		// * Абстрактные составляющие
 		public abstract BodyCondition Condition { get; }
-
 		protected abstract float MoveSpeed { get; } // TODO Реализовать разные способы передвижения: бег, ходьба, ползание (в зависимости от возможснотей тела)
-		protected List<Ailment> ailments = new List<Ailment>();
+		public abstract void TakeDamage(int _damage); // TODO Вред должно быть разного типа (заражение, удар, вывих, усталость)
+		
+		// * Общие данные
+		protected List<Ailment> ailments = new List<Ailment>(); // Список недугов
 
-		public abstract void TakeDamage(int _damage);
+		// * Конструктор
+		public BodyState(WarriorScr _owner) : base (_owner) { }
 	}
 
+	// * Варианты состояний тела //////////////////////////////////////////////////////////////////////////////
 	class GoodBody : BodyState
 	{
 		public override BodyCondition Condition { get => BodyCondition.good; }
 		protected override float MoveSpeed { get; }
 
+		public GoodBody(WarriorScr _owner) : base(_owner) { }
+
 		public override void TakeDamage(int _damage)
 		{
 			owner.AddToStory("Получил удар");
-			owner.ChangeBodyCondition(new BadBody());
+			owner.ChangeBodyCondition(new BadBody(owner));
 		}
 	}
 
@@ -40,11 +47,13 @@ namespace HumanLib
 		public override BodyCondition Condition { get => BodyCondition.bad; }
 		protected override float MoveSpeed { get; }
 
+		public BadBody(WarriorScr _owner) : base(_owner) { }
+
 		public override void TakeDamage(int _damage)
 		{
 			owner.AddToStory("Смертельно ранен");
-			owner.ChangeAction(new NothingCan());
-			owner.ChangeBodyCondition(new DyingBody());
+			owner.ChangeAction(new NothingCanAction(owner));
+			owner.ChangeBodyCondition(new DyingBody(owner));
 		}
 	}
 
@@ -53,12 +62,14 @@ namespace HumanLib
 		public override BodyCondition Condition { get => BodyCondition.dying; }
 		protected override float MoveSpeed { get; }
 
+		public DyingBody(WarriorScr _owner) : base(_owner) { }
+		
 		public override void TakeDamage(int _damage)
 		{
 			owner.AddToStory("Умер");
-			owner.ChangeAction(new NothingCan());
-			owner.ChangeBodyCondition(new DeadBody());
-			owner.ChangeMindCondition(new DeadMind());
+			owner.ChangeAction(new NothingCanAction(owner));
+			owner.ChangeBodyCondition(new DeadBody(owner));
+			owner.ChangeMindCondition(new DeadMind(owner));
 		}
 	}
 
@@ -66,6 +77,7 @@ namespace HumanLib
 	{
 		public override BodyCondition Condition { get => BodyCondition.dead; }
 		protected override float MoveSpeed { get; }
+		public DeadBody(WarriorScr _owner) : base(_owner) { }
 		public override void TakeDamage(int _damage) { }
 	}
 

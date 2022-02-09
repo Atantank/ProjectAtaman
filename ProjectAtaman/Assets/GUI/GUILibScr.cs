@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GUILib
 {
-	public interface IChosen
+	public interface ISelectable
 	{
 		public void MouseClick();
 		public GUIData GetDataForGUI();

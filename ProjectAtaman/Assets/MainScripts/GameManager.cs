@@ -31,11 +31,11 @@ public class GameManager : MonoBehaviour
 			mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 			if (Physics.Raycast(mouseRay, out hitMouseRay))
 			{
-                IChosen chosen;
-				if (hitMouseRay.collider.gameObject.TryGetComponent<IChosen>(out chosen))
+                ISelectable selected;
+				if (hitMouseRay.collider.gameObject.TryGetComponent<ISelectable>(out selected))
                 {
-                    chosen.MouseClick();
-                    GUIManagerScr.GUIManager.Choose(chosen);
+                    selected.MouseClick();
+                    GUIManagerScr.GUIManager.Select(selected);
                 }
 			}
             else

@@ -8,21 +8,21 @@ namespace HumanLib
     {
 		protected WarriorScr owner;
 
-		public void SetOwner(WarriorScr _owner)
-		{
-			owner = _owner;
-		}
+        public State(WarriorScr _owner)
+        {
+            owner = _owner;
+        }
     }
 
 	[Serializable]
-    public enum RelationType
+    public enum RelationType // Типы отношений между воинами
     {
         attacking,
         nonexistent
     }
 
     [Serializable]
-    public struct Relation
+    public struct Relation // TODO Полностью переделать
     {
         public RelationType impactType;
         public WarriorScr target;

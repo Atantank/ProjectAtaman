@@ -15,7 +15,7 @@ namespace OrderLib
     }
 
     [Serializable]
-    public class Order
+    public class Order // ? Хранить Либо список инструкций Либо функции действий, и распределять и управлять прямо из класса Приказ 
     {
 		public OrderType Type { get; private set; }
 		public GameObject Target { get; private set; }

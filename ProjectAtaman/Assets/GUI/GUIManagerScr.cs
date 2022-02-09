@@ -17,9 +17,9 @@ public class GUIManagerScr : MonoBehaviour
 		GUIManager = this;
     }
 
-    public void Choose(IChosen _chosen)
+    public void Select(ISelectable _selected)
     {
-		tmpGUIData = _chosen.GetDataForGUI();
+		tmpGUIData = _selected.GetDataForGUI();
 		nameText.text = tmpGUIData.Name;
 		largeText.text = "";
         foreach (string s in tmpGUIData.TextList)
