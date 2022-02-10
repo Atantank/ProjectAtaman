@@ -8,13 +8,13 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager GM { get; private set; }
     public bool IsPaused { get; private set; }
-    public float GameSpeed { get; private set; }
+    [SerializeField] private float gameSpeed = 1f;
+    public float GameSpeed { get => gameSpeed; }
 	private Ray mouseRay;
 	private RaycastHit hitMouseRay;
 
     void Awake()
     {
-		GameSpeed = 1f;
 		IsPaused = false;
         GM = this;
     }

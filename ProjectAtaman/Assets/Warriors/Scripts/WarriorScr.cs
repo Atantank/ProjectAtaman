@@ -84,17 +84,17 @@ public class WarriorScr : MonoBehaviour, ISelectable, IOrder, IAttacked
 	}
 
 	// * Управление состояниями //////////////////////////////////////////////////////////////////////////////////////////////////////////
-	public void ChangeBodyCondition(BodyState _bodyCondition)
+	public void ChangeBodyState(BodyState _bodyState)
 	{
-		body = _bodyCondition;
+		body = _bodyState;
 	}
 
-	public void ChangeMindCondition(MindState _mindState)
+	public void ChangeMindState(MindState _mindState)
 	{
 		mind = _mindState;
 	}
 
-	public void ChangeSpiritCondition(SpiritState _spiritState)
+	public void ChangeSpiritState(SpiritState _spiritState)
 	{
 		spirit = _spiritState;
 	}

@@ -38,7 +38,7 @@ namespace HumanLib
 		public override void TakeDamage(int _damage)
 		{
 			owner.AddToStory("Получил удар");
-			owner.ChangeBodyCondition(new BadBody(owner));
+			owner.ChangeBodyState(new BadBody(owner));
 		}
 	}
 
@@ -53,7 +53,7 @@ namespace HumanLib
 		{
 			owner.AddToStory("Смертельно ранен");
 			owner.ChangeAction(new NothingCanAction(owner));
-			owner.ChangeBodyCondition(new DyingBody(owner));
+			owner.ChangeBodyState(new DyingBody(owner));
 		}
 	}
 
@@ -68,8 +68,8 @@ namespace HumanLib
 		{
 			owner.AddToStory("Умер");
 			owner.ChangeAction(new NothingCanAction(owner));
-			owner.ChangeBodyCondition(new DeadBody(owner));
-			owner.ChangeMindCondition(new DeadMind(owner));
+			owner.ChangeBodyState(new DeadBody(owner));
+			owner.ChangeMindState(new DeadMind(owner));
 		}
 	}
 
