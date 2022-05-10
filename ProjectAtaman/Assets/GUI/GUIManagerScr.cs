@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using GUILib;
+using MainLib;
 
 public class GUIManagerScr : MonoBehaviour
 {
@@ -26,5 +27,11 @@ public class GUIManagerScr : MonoBehaviour
 		{
             largeText.text += s + "\n";
         }
+	}
+
+	public void UnSelect()
+	{
+		nameText.text = "";
+		largeText.text = "";
 	}
 }
