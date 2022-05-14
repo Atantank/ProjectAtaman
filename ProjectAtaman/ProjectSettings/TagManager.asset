@@ -50,3 +50,6 @@ TagManager:
   - name: Objects
     uniqueID: 3309326743
     locked: 0
+  - name: GUI
+    uniqueID: 1309163177
+    locked: 0

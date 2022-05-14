@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: -623996442857189147}
   - component: {fileID: 1213574434255446243}
   m_Layer: 0
-  m_Name: OrderMark
+  m_Name: OrderMarkPref
   m_TagString: Order
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -11,11 +11,12 @@ using OrderLib;
 public class HumanScr : MonoBehaviour, ISelectable, IDamageable, IInteractable
 {
 	// * Составные части и состояния ////////////////////////////////////////////////////////////////////////////////////
-	[SerializeField] private BodyState body; // Пассивно оказывает влияние на дух, разум, действия
-	[SerializeField] private SpiritState spirit; // Пассивно оказывает влияние на разум и действия
-	[SerializeField] private MindState mind; // Активно собирает всю информацию, анализирует, запускает действия
-	[SerializeField] private ActionState action; // Исполнительная система. Действия, с учетом состояний тела, духа и установок (идущих от разума)
+	private BodyState body; // Пассивно оказывает влияние на дух, разум, действия
+	private SpiritState spirit; // Пассивно оказывает влияние на разум и действия
+	private MindState mind; // Активно собирает всю информацию, анализирует, запускает действия
+	private ActionState action; // Исполнительная система. Действия, с учетом состояний тела, духа и установок (идущих от разума)
 	[SerializeField] private GameObject viewDirectionArrow;
+	[SerializeField] private GameObject SelectionSprite;
 
 	// * Условия функционирования ///////////////////////////////////////////////////////////////////////////////////////
 	[SerializeField] private List<OrderType> possibleOrderTypes;
@@ -33,7 +34,7 @@ public class HumanScr : MonoBehaviour, ISelectable, IDamageable, IInteractable
 	// * Невидимые извне параметры //////////////////////////////////////////////////////////////////////////////////////
 	// ? Соединить все в один класс ИЛИ распределить по составляющим? ///////////////////////////////////////////////////
 	[SerializeField] private int team;
-	[SerializeField] private SpriteRenderer spriteRenderer;
+	[SerializeField] private SpriteRenderer bodySpriteRenderer;
 	[SerializeField] private Color spriteColor;
     [SerializeField] private int viewDirectionStartAngle;
 
@@ -44,7 +45,8 @@ public class HumanScr : MonoBehaviour, ISelectable, IDamageable, IInteractable
 	// * Базовые функции ////////////////////////////////////////////////////////////////////////////////////////////////
 	void Awake()
 	{
-		spriteRenderer.color = spriteColor;
+		SelectionSprite.SetActive(false);
+		bodySpriteRenderer.color = spriteColor;
 		viewDirectionArrow.transform.Rotate(Vector3.right, viewDirectionStartAngle, Space.Self);
 		// transform.localEulerAngles = new Vector3(0, 0, viewDirection);
 		body = new GoodBody(this);
@@ -62,7 +64,12 @@ public class HumanScr : MonoBehaviour, ISelectable, IDamageable, IInteractable
 	// * Интерфейс ISelectable //////////////////////////////////////////////////////////////////////////////////////////
 	public void Select() // TODO Добавить как минимум индивидуальный звуковой отклик при выборе юнита
 	{
-		
+		SelectionSprite.SetActive(true);
+	}
+
+	public void UnSelect()
+	{
+		SelectionSprite.SetActive(false);
 	}
 
 	public GUIData GetDataForGUI()

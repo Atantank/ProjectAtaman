@@ -12,7 +12,7 @@ using OrderLib;
 public class GameManager : MonoBehaviour
 {
 	// TODO Перенести в настройки самого ордера? Чтобы здесь не громоздить все настройки?
-    [SerializeField] private OrderMarkScr orderMarkPref; 
+    [SerializeField] private OrderMarkScr orderMarkPref;
     [SerializeField] private float gameSpeed = 1f;
     public float GameSpeed { get => gameSpeed; }
     public bool IsPaused { get; private set; }
@@ -31,8 +31,8 @@ public class GameManager : MonoBehaviour
 		IsPaused = false;
         GM = this;
 		controller = new Controller();
-        controller.Mouse.LeftClick.started += context => LeftClick();
-		controller.Mouse.RightClick.started += context => RightClick();
+        controller.Cursor.MainClick.started += context => LeftClick();
+		controller.Cursor.MoveClick.started += context => RightClick();
 	}
 
 	void OnEnable()
@@ -47,9 +47,11 @@ public class GameManager : MonoBehaviour
 
 	void LeftClick()
 	{
-		mouseRay = Camera.main.ScreenPointToRay(controller.Mouse.MousePosition.ReadValue<Vector2>());
+		mouseRay = Camera.main.ScreenPointToRay(controller.Cursor.CursorPosition.ReadValue<Vector2>());
 		if (Physics.Raycast(mouseRay, out hitMouseRay))
 		{
+			if(selectedSelectable != null)
+				selectedSelectable.UnSelect();
 			GameObject hitObject = hitMouseRay.collider.gameObject;
 			switch(hitObject.tag)
 			{
@@ -78,11 +80,11 @@ public class GameManager : MonoBehaviour
 
 	void RightClick()
 	{
-		bool shiftPressed = controller.KeyBoard.ShiftPressed.IsPressed();
+		bool shiftPressed = controller.HotKeys.IsOrderToQueue.IsPressed();
 		print(shiftPressed);
 		if(selectedInteractable != null)
 		{
-			mouseRay = Camera.main.ScreenPointToRay(controller.Mouse.MousePosition.ReadValue<Vector2>());
+			mouseRay = Camera.main.ScreenPointToRay(controller.Cursor.CursorPosition.ReadValue<Vector2>());
 			if (Physics.Raycast(mouseRay, out hitMouseRay))
 			{
 				GameObject hitObject = hitMouseRay.collider.gameObject;
